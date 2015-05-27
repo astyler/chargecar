@@ -1,11 +1,14 @@
-package org.chargecar.algodev.controllers;
+package org.chargecar.algodev.policies;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.chargecar.algodev.controllers.MDPPolynomial;
 import org.chargecar.prize.battery.BatteryModel;
 import org.chargecar.prize.policies.Policy;
 import org.chargecar.prize.util.PointFeatures;
@@ -13,21 +16,21 @@ import org.chargecar.prize.util.PowerFlows;
 import org.chargecar.prize.util.Trip;
 import org.chargecar.prize.util.TripFeatures;
 
-public class MDPTrainer implements Policy {
+public class MDPPolyTrainer implements Policy {
     private String currentDriver;
     private final String optFileFolderPath;
     private final double discountFactor = 0.99;
     private final int[] controlsSet = new int[]{-512,-1024,0,512,1024,1536,2048,2516,3072,3524,4096,5122,5500,6134,6600,7124,7600,8192,9122,10020,12000};
-    private final MDPValueGraph mmdpOpt;
+    private final MDPPolynomial mmdpOpt;
     private Map<Integer, double[][]> tripMap;
-    private final String shortName = "dpgtt";
+    private final String shortName = "dppolyt";
     private final BatteryModel cap;
     
-    public MDPTrainer(String optFileFolderPath, BatteryModel cap, int stateCount){
+    public MDPPolyTrainer(String optFileFolderPath, BatteryModel cap, int order, int stateCount){
 	tripMap = new HashMap<Integer,double[][]>();
 	this.optFileFolderPath = optFileFolderPath+"/";
 	this.cap = cap.createClone();
-	mmdpOpt = new MDPValueGraph(controlsSet, stateCount, discountFactor, cap);
+	mmdpOpt = new MDPPolynomial(controlsSet, stateCount, order, discountFactor);
     }    
 
     @Override
@@ -50,8 +53,8 @@ public class MDPTrainer implements Policy {
 	    tripMap = new HashMap<Integer,double[][]>();
 	}
 	
-	double[][] valueGraph = mmdpOpt.getValues(trip.getPoints());
-	tripMap.put(trip.hashCode(), valueGraph);
+	double[][] coeffs = mmdpOpt.getCoefficients(trip.getPoints(), this.cap);
+	tripMap.put(trip.hashCode(), coeffs);
 	
 	
     }
@@ -79,7 +82,7 @@ public class MDPTrainer implements Policy {
 	writeTable();
     }
     
-    private String name = "Table Trainer";
+    private String name = "Poly Trainer";
     
     public void beginTrip(TripFeatures tripFeatures, BatteryModel batteryClone,
 	    BatteryModel capacitorClone) {}

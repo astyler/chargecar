@@ -81,6 +81,33 @@ public class CSVWriter implements Visualizer {
 	}
     }
     
+    public static void writeTrip(String lfilename, Trip t){
+	FileWriter fstream;
+	try {
+	    fstream = new FileWriter(lfilename);
+	    BufferedWriter out = new BufferedWriter(fstream);
+	    
+	    for(PointFeatures pf : t.getPoints()){
+		out.write(String.format("%.6f", pf.getLatitude())+", ");
+		out.write(String.format("%.6f", pf.getLongitude())+", ");
+		out.write(String.format("%.2f", pf.getElevation())+", ");
+		out.write(String.format("%.2f", pf.getBearing())+", ");
+		out.write(String.format("%.2f", pf.getPlanarDist())+", ");
+		out.write(String.format("%.3f", pf.getSpeed())+", ");
+		out.write(String.format("%.3f", pf.getAcceleration())+", ");
+		out.write(String.format("%.4f", pf.getPowerDemand())+", ");
+		out.write(String.format("%.4f", pf.getTotalPowerUsed())+", ");
+		out.write(String.format("%d",pf.getPeriodMS())+", ");
+		out.write(String.format("%d", pf.getTime().getTimeInMillis())+"\n");
+	    }
+	    out.close();
+	} catch (IOException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	}
+	
+    }
+    
     public void visualizeTrip(Trip trip, BatteryModel battery,
 	    BatteryModel capacitor) {
 	System.out.println(trip);

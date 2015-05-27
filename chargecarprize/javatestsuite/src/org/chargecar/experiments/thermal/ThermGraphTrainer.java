@@ -14,10 +14,10 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.chargecar.algodev.controllers.MDPPolyTrainer;
-import org.chargecar.algodev.controllers.MDPTrainer;
 import org.chargecar.algodev.knn.KnnPoint;
 import org.chargecar.algodev.knn.KnnTableTrainer;
+import org.chargecar.algodev.policies.MDPPolyTrainer;
+import org.chargecar.algodev.policies.MDPTrainer;
 import org.chargecar.prize.battery.SimpleCapacitor;
 import org.chargecar.prize.util.GPXTripParser;
 import org.chargecar.prize.util.PointFeatures;

@@ -12,7 +12,8 @@ import Jama.Matrix;
 
 //TODO TABULATE DYNAMICS!!!!!
 
-public class MDPPolynomial{
+public class MDPPolynomial
+{
     
     final int[] U;
     final int X; //how many charge states 

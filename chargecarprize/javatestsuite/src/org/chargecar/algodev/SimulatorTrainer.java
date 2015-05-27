@@ -5,15 +5,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.chargecar.algodev.controllers.MDPPolyTrainer;
-import org.chargecar.algodev.controllers.MDPTrainer;
 import org.chargecar.algodev.knn.KnnTableTrainer;
+import org.chargecar.algodev.policies.MDPPolyTrainer;
+import org.chargecar.algodev.policies.MDPTrainer;
 import org.chargecar.prize.battery.SimpleCapacitor;
 import org.chargecar.prize.util.GPXTripParser;
 import org.chargecar.prize.util.PointFeatures;
 import org.chargecar.prize.util.Trip;
 import org.chargecar.prize.util.TripFeatures;
 import org.chargecar.prize.util.Vehicle;
+import org.chargecar.prize.visualization.CSVWriter;
 
 /**
  * DO NOT EDIT Runs the simulation of an electric car running over a commute
@@ -48,7 +49,7 @@ public class SimulatorTrainer {
 	
 	String gpxFolder = args[0];
 	String optFolder = args[1];
-	int capWhr = Integer.parseInt(args[2]);
+	//int capWhr = Integer.parseInt(args[2]);
 	
 	File folder = new File(gpxFolder);
 	List<File> gpxFilesT = getGPXFiles(folder);
@@ -59,17 +60,18 @@ public class SimulatorTrainer {
 	
 	System.out.println("Training on "+gpxFiles.size()+" GPX files.");
 	//MDPPolyTrainer policy = new MDPPolyTrainer(optFolder, new SimpleCapacitor(capWhr, 0, systemVoltage), 4, 100);
-	MDPTrainer policy = new MDPTrainer(optFolder, new SimpleCapacitor(capWhr, 0, systemVoltage), 20);
+	//MDPTrainer policy = new MDPTrainer(optFolder, new SimpleCapacitor(capWhr, 0, systemVoltage), 20);
 	//KnnTableTrainer policy = new KnnTableTrainer(optFolder);
 	int count = 0;
 	for (File tripFile : gpxFiles) {
 	    List<Trip> tripsToTest = parseTrips(tripFile);
 	    for (Trip t : tripsToTest) {
-		policy.parseTrip(t);
+		//policy.parseTrip(t);
+		CSVWriter.writeTrip(optFolder+"/"+t.getFeatures().getFileName(), t);
 		count++;
 	    }
 	}	
-	policy.finishTraining();
+	//policy.finishTraining();
 	System.out.println("Complete. Trips trained on: "+count);
     }    
     

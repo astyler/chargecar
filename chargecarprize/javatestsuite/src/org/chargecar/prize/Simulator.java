@@ -146,7 +146,7 @@ public class Simulator {
 	    cap.drawPower(pf.getCapacitorToMotor()
 		    - pf.getBatteryToCapacitor(), point.getPeriodMS());
 	}
-	policy.endTrip();
+	policy.endTrip(trip);
     }
     
     private static List<Trip> parseTrips(File gpxFile) throws IOException {

@@ -4,6 +4,7 @@ import org.chargecar.prize.battery.BatteryModel;
 import org.chargecar.prize.util.PointFeatures;
 import org.chargecar.prize.util.PowerFlowException;
 import org.chargecar.prize.util.PowerFlows;
+import org.chargecar.prize.util.Trip;
 import org.chargecar.prize.util.TripFeatures;
 
 /**
@@ -70,7 +71,7 @@ public class SpeedPolicy implements Policy {
 		batteryToCapWatts);
     }
     
-    public void endTrip() {
+    public void endTrip(Trip t) {
 	modelCap = null;
 	modelBatt = null;
     }

@@ -7,6 +7,7 @@ import org.chargecar.prize.battery.BatteryModel;
 import org.chargecar.prize.util.PointFeatures;
 import org.chargecar.prize.util.PowerFlowException;
 import org.chargecar.prize.util.PowerFlows;
+import org.chargecar.prize.util.Trip;
 import org.chargecar.prize.util.TripFeatures;
 
 /**
@@ -66,7 +67,7 @@ public class NaiveBufferPolicy implements Policy {
 	return new PowerFlows(batteryToMotorWatts, capToMotorWatts, 0);
     }
     
-    public void endTrip() {
+    public void endTrip(Trip t) {
 	// clear any trip-wide-state
 	modelCap = null;
 	modelBatt = null;
