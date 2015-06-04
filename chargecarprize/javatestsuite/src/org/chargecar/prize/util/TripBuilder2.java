@@ -25,22 +25,25 @@ public class TripBuilder2 {
 	int fixes = 0;
 	do{	    
 	    broken = false;
-//	    removeTunnels(times, lats, lons, eles);
-//	    interpolatePoints(times, lats, lons, eles);
+	    removeTunnels(times, lats, lons, eles);
+	    interpolatePoints(times, lats, lons, eles);
 	    tripPoints = new ArrayList<PointFeatures>(times.size());
 	    runPowerModel(tripPoints, times, lats, lons, eles, vehicle);
-//	    for(int i=0; i < tripPoints.size();i++){
-//			if(Math.abs(tripPoints.get(i).getAcceleration()) > 4.9){
-//			    broken = true;
-//			    fixes++;
-//			    lats.remove(i);
-//			    lons.remove(i);
-//			    eles.remove(i);
-//			    times.remove(i);
+	    for(int i=0; i < tripPoints.size();i++){
+			if(Math.abs(tripPoints.get(i).getAcceleration()) > 4.9){
+			    broken = true;
+			    fixes++;
+			    lats.remove(i);
+			    lons.remove(i);
+			    eles.remove(i);
+			    times.remove(i);
 //			    tripPoints.remove(i);
 //			    i=i+1;
-//			}		
-//	    }
+			    break;
+			}		
+	    }
+	    if(((double)fixes / (double)tripPoints.size()) > 0.05)
+	    	return null;	
 	}while(broken);
 	
 	if((double)fixes / (tripPoints.size()+fixes) > 0.02){
@@ -173,20 +176,20 @@ public class TripBuilder2 {
 	    powerDemands.add(pwr + offset);// convert back to watts
 	    
 	}
-	double powerSum = 0;
+	double energySum = 0;
 	for (int i = 1; i < times.size(); i++) {
 	    int periodMS = (int) (times.get(i).getTimeInMillis() - times.get(
 		    i - 1).getTimeInMillis());
 	    double power = powerDemands.get(i);
 	    tripPoints.add(new PointFeatures(lats.get(i - 1), lons.get(i - 1),
 		    eles.get(i - 1), bearings.get(i - 1),planarDistances.get(i), accelerations
-		    .get(i), speeds.get(i), power, powerSum,
+		    .get(i), speeds.get(i), power, energySum,
 		    periodMS, times.get(i - 1)));
-	    powerSum += power;
+	    energySum += power*(double)periodMS/1000.0/3600.0;//Watt hours
 	}
 	PointFeatures endPoint = new PointFeatures(lats.get(lats.size() - 1),
 		lons.get(lons.size() - 1), eles.get(eles.size() - 1), bearings.get(bearings.size() - 1), 0.0, 0.0,
-		0.0, 0.0, powerSum, 1000, times.get(times.size() - 1));
+		0.0, 0.0, energySum, 1000, times.get(times.size() - 1));
 	tripPoints.add(endPoint);
 	
     }    
@@ -208,11 +211,14 @@ public class TripBuilder2 {
 		if (Haversine(lats.get(i - 1), lons.get(i - 1), lats.get(i),
 			lons.get(i)) > 50) {
 		    // if traveled at least 50 metres, assume tunnel
-		    times.subList(i - consecutiveCounter, i).clear();
-		    lats.subList(i - consecutiveCounter, i).clear();
-		    lons.subList(i - consecutiveCounter, i).clear();
-		    eles.subList(i - consecutiveCounter, i).clear();
-		    i = i - consecutiveCounter;
+		    int from = i - consecutiveCounter;
+		    if(from == 1) from = 0;
+		    int to = i;
+		    times.subList(from, to).clear();
+		    lats.subList(from, to).clear();
+		    lons.subList(from, to).clear();
+		    eles.subList(from, to).clear();
+		    i = from;
 		}
 		consecutiveCounter = 0;
 	    }

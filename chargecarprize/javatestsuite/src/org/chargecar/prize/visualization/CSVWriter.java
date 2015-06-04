@@ -86,7 +86,7 @@ public class CSVWriter implements Visualizer {
 	try {
 	    fstream = new FileWriter(lfilename);
 	    BufferedWriter out = new BufferedWriter(fstream);
-	    
+	    out.write("Latitude,Longitude,Elevation,Bearing,PlanarDistance,Speed,Acceleration,Power,TotalEnergyUsed,PeriodMS,Time\n");
 	    for(PointFeatures pf : t.getPoints()){
 		out.write(String.format("%.6f", pf.getLatitude())+", ");
 		out.write(String.format("%.6f", pf.getLongitude())+", ");

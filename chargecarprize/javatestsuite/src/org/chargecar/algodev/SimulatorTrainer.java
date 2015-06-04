@@ -67,7 +67,7 @@ public class SimulatorTrainer {
 	    List<Trip> tripsToTest = parseTrips(tripFile);
 	    for (Trip t : tripsToTest) {
 		//policy.parseTrip(t);
-		CSVWriter.writeTrip(optFolder+"/"+t.getFeatures().getFileName(), t);
+		CSVWriter.writeTrip(optFolder+"/"+t.getFeatures().getFileName()+".csv", t);
 		count++;
 	    }
 	}	
